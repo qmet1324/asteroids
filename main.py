@@ -12,7 +12,12 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return 
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    return
+
         pygame.Surface.fill(screen, BLACK_COLOR)
 
         player.draw(screen)
