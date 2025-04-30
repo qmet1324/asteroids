@@ -2,6 +2,8 @@ from circleshape import *
 from constants import * 
 
 class Player(CircleShape):
+    containers = () # shared variable shared by all instances
+
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
