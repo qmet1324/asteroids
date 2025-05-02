@@ -1,12 +1,16 @@
 from circleshape import *
-from constants import * 
+from constants import *
+from shot import *
+
 
 class Player(CircleShape):
     containers = () # shared variable shared by all instances
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, shot_group):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.shoot_timer = 0
+        self.shot_group = shot_group
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -25,6 +29,7 @@ class Player(CircleShape):
     def update(self, dt):
         keys = pygame.key.get_pressed()
 
+        # Movement Key Inputs
         if keys[pygame.K_a]:
             self.rotate(-dt)
         if keys[pygame.K_d]:
@@ -34,6 +39,19 @@ class Player(CircleShape):
         if keys[pygame.K_s]:
             self.move(-dt)
 
+        # Shoot Key Input
+        if keys[pygame.K_SPACE]:
+            if self.shoot_timer <= 0:
+                self.shoot()
+
+        self.shoot_timer -= dt
+
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
+
+    def shoot(self):
+        shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
+        shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        self.shot_group.add(shot)
+        self.shoot_timer = PLAYER_SHOOT_COOLDOWN
